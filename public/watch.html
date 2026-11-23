@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0f17">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <title>LiveRelay — Regarder le live</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/common.js" defer></script>
+  <script src="js/watch.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span>LiveRelay</span>
+    </a>
+    <div class="topbar-actions">
+      <span id="watchStatus" class="status" data-state="connecting">Connexion…</span>
+      <a class="btn ghost" href="index.html">Tous les lives</a>
+    </div>
+  </header>
+
+  <main class="container watch-container">
+    <div class="watch-head">
+      <div>
+        <p class="eyebrow">Direct</p>
+        <h1 id="watchTitle">Chargement…</h1>
+        <p id="watchHost" class="live-host"></p>
+      </div>
+      <div class="watch-meta">
+        <span id="watchQuality" class="chip">—</span>
+        <span id="watchViewers" class="chip">0 spectateurs</span>
+        <span id="watchDuration" class="chip">00:00</span>
+      </div>
+    </div>
+
+    <div id="hostBanner" class="host-banner" hidden>
+      <span class="spinner small" aria-hidden="true"></span>
+      L'hôte est déconnecté. Reconnexion en cours…
+    </div>
+
+    <div class="player-shell">
+      <video id="video" playsinline preload="auto"></video>
+      <button id="fullscreenBtn" class="player-fullscreen" type="button" title="Plein écran">⛶</button>
+      <div class="player-controls">
+        <button id="playPauseBtn" class="player-btn" type="button">Lecture</button>
+        <button id="muteBtn" class="player-btn" type="button">Couper le son</button>
+        <span class="player-live"><span class="player-live-dot" aria-hidden="true"></span> EN DIRECT</span>
+        <span id="bufferingBadge" class="buffering-badge" hidden>
+          <span class="spinner small" aria-hidden="true"></span>
+          Mise en mémoire…
+        </span>
+      </div>
+      <div id="overlay" class="player-overlay" hidden>
+        <p id="overlayText"></p>
+        <button id="overlayBtn" class="btn primary" type="button">OK</button>
+      </div>
+    </div>
+
+    <div class="watch-foot">
+      <a class="btn ghost" href="index.html">Retour à la liste</a>
+      <span class="hint">WebM/MSE sur ordinateur · HLS automatique sur iPhone/Safari · Buffer 2 s</span>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <span>LiveRelay</span>
+    <span>WebM VP8/VP9 + Opus · HLS H.264/AAC · Aucun P2P</span>
+  </footer>
+</body>
+</html>

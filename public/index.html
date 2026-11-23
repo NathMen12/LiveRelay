@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0f17">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <title>LiveRelay — Lives en cours</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/common.js" defer></script>
+  <script src="js/home.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span>LiveRelay</span>
+    </a>
+    <div class="topbar-actions">
+      <span id="connStatus" class="status" data-state="connecting">Connexion…</span>
+      <button id="refreshBtn" class="btn ghost small" type="button">Actualiser</button>
+      <a class="btn primary" href="create.html">Créer un live</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <p class="eyebrow">Capture navigateur → serveur → spectateurs</p>
+      <h1>Les lives en cours</h1>
+      <p class="muted">Rejoignez un direct ou créez le vôtre. Aucun pair-à-pair : tout transite par le serveur.</p>
+    </section>
+
+    <div id="livesGrid" class="lives-grid"></div>
+
+    <section id="emptyState" class="empty" hidden>
+      <h2>Aucun live pour le moment</h2>
+      <p>Soyez le premier à partager votre écran.</p>
+      <a class="btn primary" href="create.html">Créer un live</a>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>LiveRelay</span>
+    <span>WebM · MediaRecorder · MediaSource Extensions · Node.js + ws</span>
+  </footer>
+</body>
+</html>

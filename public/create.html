@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0f17">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <title>LiveRelay — Créer un live</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/common.js" defer></script>
+  <script src="js/create.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span>LiveRelay</span>
+    </a>
+    <div class="topbar-actions">
+      <a class="btn ghost" href="index.html">Tous les lives</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="setupView" class="setup-card card">
+      <p class="eyebrow">Studio hôte</p>
+      <h1>Créer un live</h1>
+      <p class="muted">Partagez votre écran, activez le micro si besoin, puis diffusez. Le serveur relaie le flux à tous les spectateurs.</p>
+
+      <form id="liveForm" autocomplete="off">
+        <div class="form-grid">
+          <label class="field">
+            <span>Titre du live</span>
+            <input id="title" name="title" type="text" maxlength="120" placeholder="Démo LiveRelay" required>
+          </label>
+          <label class="field">
+            <span>Pseudo</span>
+            <input id="host" name="host" type="text" maxlength="40" placeholder="Pseudo de l'hôte" required>
+          </label>
+          <label class="field">
+            <span>Résolution</span>
+            <select id="resolution" name="resolution">
+              <option value="480p">480p (854×480)</option>
+              <option value="720p">720p (1280×720)</option>
+              <option value="1080p" selected>1080p (1920×1080)</option>
+              <option value="1440p">1440p (2560×1440)</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Images par seconde</span>
+            <select id="fps" name="fps">
+              <option value="15">15 fps</option>
+              <option value="24">24 fps</option>
+              <option value="30" selected>30 fps</option>
+              <option value="60">60 fps</option>
+            </select>
+          </label>
+          <label class="field field-wide">
+            <span>Bitrate vidéo</span>
+            <select id="bitrate" name="bitrate">
+              <option value="0" selected>Auto (calculé selon résolution + fps)</option>
+              <option value="1500000">1.5 Mbps</option>
+              <option value="2500000">2.5 Mbps</option>
+              <option value="4000000">4 Mbps</option>
+              <option value="6000000">6 Mbps</option>
+              <option value="8000000">8 Mbps</option>
+              <option value="12000000">12 Mbps</option>
+            </select>
+          </label>
+          <label class="field field-wide">
+            <span>Mode de capture</span>
+            <select id="captureMode" name="captureMode">
+              <option value="direct" selected>Auto — direct (recommandé)</option>
+              <option value="canvas">Canvas — forcer la résolution</option>
+            </select>
+          </label>
+          <p class="hint field-wide">Le mode <strong>direct</strong> utilise la piste d'écran telle quelle : plus fiable quand l'onglet hôte passe en arrière-plan. Le mode <strong>canvas</strong> force la résolution demandée mais peut geler si l'onglet hôte n'est plus visible.</p>
+          <label class="field field-wide check-field">
+            <input id="micEnabled" name="micEnabled" type="checkbox">
+            <span>Activer le micro</span>
+          </label>
+          <label class="field field-wide check-field">
+            <input id="systemAudio" name="systemAudio" type="checkbox">
+            <span>Capturer l'audio système (si le navigateur le permet)</span>
+          </label>
+        </div>
+
+        <p id="formError" class="error" hidden></p>
+
+        <div class="form-actions">
+          <button id="shareBtn" class="btn primary big" type="submit">Partager l'écran et lancer le live</button>
+        </div>
+
+        <p class="hint">Chrome ou Edge sur ordinateur recommandé. <strong>getDisplayMedia</strong> exige HTTPS ou localhost. Le partage d'écran s'effectue dans la fenêtre de votre navigateur.</p>
+      </form>
+    </section>
+
+    <section id="studioView" class="studio" hidden>
+      <div class="studio-grid">
+        <div class="preview-card card">
+          <div class="preview-frame">
+            <video id="preview" autoplay muted playsinline></video>
+            <div class="preview-label">Aperçu local</div>
+          </div>
+          <div class="live-line">
+            <span id="liveStatus" class="live-status" data-state="live">En direct</span>
+            <span class="muted">Cet aperçu est muet et n'est pas envoyé aux spectateurs.</span>
+          </div>
+        </div>
+
+        <aside class="side-card card">
+          <h2 id="studioTitle">Live</h2>
+          <p class="live-host">Hôte : <strong id="studioHost"></strong></p>
+
+          <dl class="stats">
+            <div>
+              <dt>Résolution demandée</dt>
+              <dd id="reqRes">—</dd>
+            </div>
+            <div>
+              <dt>Résolution réelle</dt>
+              <dd id="realRes">—</dd>
+            </div>
+            <div>
+              <dt>FPS demandés</dt>
+              <dd id="reqFps">—</dd>
+            </div>
+            <div>
+              <dt>FPS réels</dt>
+              <dd id="realFps">—</dd>
+            </div>
+            <div>
+              <dt>Bitrate cible</dt>
+              <dd id="targetBitrate">—</dd>
+            </div>
+            <div>
+              <dt>Bitrate envoyé</dt>
+              <dd id="actualBitrate">—</dd>
+            </div>
+            <div>
+              <dt>Spectateurs</dt>
+              <dd id="viewers">0</dd>
+            </div>
+            <div>
+              <dt>Durée</dt>
+              <dd id="duration">00:00</dd>
+            </div>
+          </dl>
+
+          <div class="actions">
+            <button id="micBtn" class="btn" type="button">Activer le micro</button>
+            <button id="stopBtn" class="btn danger" type="button">Arrêter le live</button>
+          </div>
+
+          <p id="studioError" class="error" hidden></p>
+          <p id="codecHint" class="hint"></p>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <div id="toastBox" class="toast-box" aria-live="polite"></div>
+
+  <footer class="footer">
+    <span>LiveRelay</span>
+    <span>Le flux passe par le serveur. Aucun WebRTC pair-à-pair.</span>
+  </footer>
+</body>
+</html>
